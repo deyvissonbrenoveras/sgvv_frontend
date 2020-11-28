@@ -3,10 +3,12 @@ import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 
 import { IoCarSportSharp } from 'react-icons/io5';
-import api from '../../services/api';
+import { useDispatch } from 'react-redux';
 import { Container } from './styles';
+import { signInRequest } from '../../store/modules/auth/actions';
 
 function Signin() {
+  const dispatch = useDispatch();
   const validationSchema = Yup.object().shape({
     email: Yup.string()
       .email('E-mail inválido')
@@ -15,9 +17,8 @@ function Signin() {
       .min(6, 'Mínimo de 6 caracteres')
       .required('A senha é obrigatória'),
   });
-  async function handleSubmit(values) {
-    const response = await api.post('sessions', values);
-    console.log(response.data);
+  async function handleSubmit({ email, password }) {
+    dispatch(signInRequest({ email, password }));
   }
   return (
     <Container>
