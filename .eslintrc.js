@@ -27,5 +27,7 @@ module.exports = {
     'react/jsx-props-no-spreading': 'off',
     'no-param-reassign': [2, { props: false }],
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
+    'no-underscore-dangle': 'off',
+    'jsx-a11y/label-has-associated-control': 'off',
   },
 };

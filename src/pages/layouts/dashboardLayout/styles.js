@@ -23,6 +23,9 @@ export const Content = styled.div`
   max-width: 1000px;
   background-color: #fff;
   border-radius: 10px 10px 0 0;
+  padding: 10px;
+  overflow-y: hidden;
+  position: relative;
 `;
 export const BottomMenu = styled.ul`
   flex: 0.1;
@@ -32,12 +35,16 @@ export const BottomMenu = styled.ul`
   background-color: #fff;
   display: flex;
   justify-content: space-around;
+  overflow: hidden;
   li {
     flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14;
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14;
+      height: 100%;
+    }
     cursor: pointer;
     &:hover {
       background-color: ${lighten(0.2, 'rgba(255, 189, 46, 1)')};

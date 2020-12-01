@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import { IoCarSportSharp, IoPersonSharp } from 'react-icons/io5';
 import { GiCarWheel } from 'react-icons/gi';
+import { Link } from 'react-router-dom';
 import { Wrapper, Content, BottomMenu } from './styles';
 
 function Dashboard({ children }) {
@@ -11,16 +12,22 @@ function Dashboard({ children }) {
       <Content>{children}</Content>
       <BottomMenu>
         <li>
-          <IoCarSportSharp />
-          <div>Veículos</div>
+          <Link to="/veiculos">
+            <IoCarSportSharp />
+            <div>Veículos</div>
+          </Link>
         </li>
         <li>
-          <IoPersonSharp />
-          Motoristas
+          <Link to="/motoristas">
+            <IoPersonSharp />
+            <div>Motoristas</div>
+          </Link>
         </li>
         <li>
-          <GiCarWheel />
-          Viajens
+          <Link to="/viagens">
+            <GiCarWheel />
+            <div>Viagens</div>
+          </Link>
         </li>
       </BottomMenu>
     </Wrapper>

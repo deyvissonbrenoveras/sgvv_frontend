@@ -11,10 +11,25 @@ export function* signIn({ payload }) {
     api.defaults.headers.authorization = `Bearer ${token}`;
     yield put(signInSuccess(token, user));
   } catch (err) {
-    console.tron.log(err);
     cogoToast.error('Falha no logon, por favor tente novamente', {
-      position: 'top-left',
+      position: 'top-right',
     });
   }
 }
-export default all([takeLatest('@auth/SIGN_IN_REQUEST', signIn)]);
+export function* setToken({ payload }) {
+  try {
+    const { token } = payload.auth;
+    if (token) {
+      api.defaults.headers.authorization = `Bearer ${token}`;
+      yield put(signInSuccess(token));
+    }
+  } catch (err) {
+    cogoToast.error('Falha ao carregar as informações de logon', {
+      position: 'top-right',
+    });
+  }
+}
+export default all([
+  takeLatest('@auth/SIGN_IN_REQUEST', signIn),
+  takeLatest('persist/REHYDRATE', setToken),
+]);
