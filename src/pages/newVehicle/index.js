@@ -3,9 +3,8 @@ import * as Yup from 'yup';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useDispatch } from 'react-redux';
 import { Container } from './styles';
-
+import Img from '../../components/Img';
 import { addVehicleRequest } from '../../store/modules/vehicle/actions';
-import AddButton from '../../components/AddButton';
 
 function newVehicle() {
   const dispatch = useDispatch();
@@ -36,6 +35,8 @@ function newVehicle() {
         onSubmit={handleSubmit}
       >
         <Form>
+          <Img name="image" />
+
           <label htmlFor="description">
             Descrição
             <Field

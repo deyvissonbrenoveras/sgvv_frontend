@@ -26,6 +26,17 @@ export const Content = styled.div`
   padding: 10px;
   overflow-y: hidden;
   position: relative;
+  form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    label {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+    }
+  }
 `;
 export const BottomMenu = styled.ul`
   flex: 0.1;

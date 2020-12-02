@@ -16,7 +16,7 @@ function vehicles() {
   }, []);
   return (
     <>
-      <AddButton />
+      <AddButton to="/novoveiculo" />
       <Container>
         {loading ? (
           'Carregando...'

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { darken } from 'polished';
+import { Link } from 'react-router-dom';
 
-export const Container = styled.div`
+export const Container = styled(Link)`
   position: absolute;
   bottom: 30px;
   right: 40px;
@@ -13,6 +14,7 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
   color: #fff;
+
   svg {
     font-size: 32px;
   }
