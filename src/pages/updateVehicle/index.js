@@ -18,7 +18,6 @@ function updateVehicle({ match }) {
     dispatch(loadVehicleRequest(_id));
   }, []);
   function handleSubmit(values) {
-    console.tron.log(values);
     dispatch(updateVehicleRequest(_id, values));
   }
   return (
