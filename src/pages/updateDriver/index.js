@@ -47,8 +47,8 @@ function updateDriver({ match }) {
           initialValues={{
             ...driver,
             password: '',
-            newPassword: '',
-            confirmNewPassword: '',
+            newPassword: undefined,
+            confirmNewPassword: undefined,
           }}
           enableReinitialize
           onSubmit={handleSubmit}
