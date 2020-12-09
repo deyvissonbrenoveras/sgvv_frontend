@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import * as Yup from 'yup';
 import PropTypes from 'prop-types';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,12 +13,28 @@ import {
 
 function updateDriver({ match }) {
   const dispatch = useDispatch();
+  const validationSchema = Yup.object().shape({
+    name: Yup.string().required('O nome é obrigatório'),
+    newPassword: Yup.string().min(6, 'Mínimo de 6 caracteres').notRequired(),
+    password: Yup.string().when('newPassword', {
+      is: (newPassword) => newPassword,
+      then: Yup.string().required('Insira a senha atual'),
+    }),
+    confirmNewPassword: Yup.string().when('newPassword', {
+      is: (confirmNewPassword) => confirmNewPassword,
+      then: Yup.string()
+        .min(6, 'Mínimo de 6 caracteres')
+        .oneOf([Yup.ref('newPassword'), null], 'As senhas não conferem')
+        .required('Insira a confirmação de senha'),
+    }),
+  });
   const { _id } = match.params;
   const { loading, driver } = useSelector((state) => state.driver);
   useEffect(() => {
     dispatch(loadDriverRequest(_id));
   }, []);
   function handleSubmit(values) {
+    console.tron.log(values);
     dispatch(updateDriverRequest(_id, values));
   }
   return (
@@ -27,9 +44,15 @@ function updateDriver({ match }) {
         'Carregando...'
       ) : (
         <Formik
-          initialValues={driver}
+          initialValues={{
+            ...driver,
+            password: '',
+            newPassword: '',
+            confirmNewPassword: '',
+          }}
           enableReinitialize
           onSubmit={handleSubmit}
+          validationSchema={validationSchema}
         >
           <Form>
             <Img name="avatar" />
@@ -41,7 +64,7 @@ function updateDriver({ match }) {
             </label>
 
             <label htmlFor="password">
-              Senha
+              Senha atual
               <Field
                 type="password"
                 id="password"
@@ -53,7 +76,7 @@ function updateDriver({ match }) {
             <label htmlFor="newPassword">
               Nova senha
               <Field
-                type="newPassword"
+                type="password"
                 id="newPassword"
                 name="newPassword"
                 placeholder="Nova senha"

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FaCarAlt } from 'react-icons/fa';
+import { BsImage } from 'react-icons/bs';
 import { Link } from 'react-router-dom';
 import { Container, Item } from './styles';
 
@@ -12,7 +12,7 @@ export function ListItem({ to, avatarUrl, title }) {
   return (
     <Item>
       <Link to={to}>
-        {avatarUrl ? <img src={avatarUrl} alt={title} /> : <FaCarAlt />}
+        {avatarUrl ? <img src={avatarUrl} alt={title} /> : <BsImage />}
         <div>{title}</div>
       </Link>
     </Item>
