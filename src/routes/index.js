@@ -10,6 +10,8 @@ import UpdateVehicle from '../pages/updateVehicle';
 import Drivers from '../pages/drivers';
 import NewDriver from '../pages/newDriver';
 import UpdateDriver from '../pages/updateDriver';
+import Trips from '../pages/trips';
+import NewTrip from '../pages/newTrip';
 
 export default function Routes() {
   return (
@@ -25,6 +27,7 @@ export default function Routes() {
         exact
         isPrivate
       />
+
       <Route path="/motoristas" component={Drivers} exact isPrivate />
       <Route path="/novomotorista" component={NewDriver} exact isPrivate />
       <Route
@@ -33,6 +36,9 @@ export default function Routes() {
         exact
         isPrivate
       />
+
+      <Route path="/viagens" component={Trips} exact isPrivate />
+      <Route path="/novaviagem" component={NewTrip} exact isPrivate />
     </Switch>
   );
 }

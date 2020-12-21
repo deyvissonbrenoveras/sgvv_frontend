@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import { lighten } from 'polished';
 
 export const Wrapper = styled.div`
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   background: rgb(255, 189, 46);
   background: linear-gradient(
     31deg,
@@ -19,6 +19,7 @@ export const Wrapper = styled.div`
 
 export const Content = styled.div`
   width: 100%;
+  height: 100%;
   flex: 0.9;
   max-width: 1000px;
   background-color: #fff;
