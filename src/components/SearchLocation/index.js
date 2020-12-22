@@ -16,18 +16,23 @@ function SearchLocation({ name, label }) {
   const [inputState, setInputState] = useState({ value: '', readOnly: false });
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [clearVisible, setClearVisible] = useState(false);
+
+  let timer = null;
   async function handleChange(e) {
+    clearTimeout(timer);
+    setInputState({ ...inputState, value: e.target.value });
     if (!selectedLocation) {
-      setInputState({ ...inputState, value: e.target.value });
-      const response = await geocoder.search({ q: e.target.value });
-      setSearchResult({ visible: true, locations: response });
+      timer = setTimeout(async () => {
+        const response = await geocoder.search({ q: e.target.value });
+        setSearchResult({ visible: true, locations: response });
+      }, 2000);
     }
   }
 
   function handleClick(location) {
     setValue({
       name: location.display_name,
-      lat_lon: [location.lat, location.lon],
+      latLon: [location.lat, location.lon],
     });
     setSelectedLocation(location);
     setInputState({
@@ -45,7 +50,7 @@ function SearchLocation({ name, label }) {
     setClearVisible(false);
     setValue({
       name: '',
-      lat_lon: [],
+      latLon: [],
     });
   }
 
