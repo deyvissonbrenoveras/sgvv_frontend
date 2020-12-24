@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes, { number } from 'prop-types';
 
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import L from 'leaflet';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+// import L from 'leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import SearchLocation from '../../components/SearchLocation';
 import { Container } from './styles';
 import { FlexContainer, FlexItem } from '../../components/FlexContainer';
 
 import { loadDriversRequest } from '../../store/modules/driver/actions';
 import { loadVehiclesRequest } from '../../store/modules/vehicle/actions';
+import { addTripRequest } from '../../store/modules/trip/actions';
 
 function newTrip() {
   const dispatch = useDispatch();
@@ -27,20 +29,44 @@ function newTrip() {
   const mapCenter = [-6.8909, -38.5566];
 
   function handleSubmit(values) {
-    console.tron.log(values);
+    dispatch(addTripRequest(values));
   }
-  function getBounds(positions) {
-    const latLngs = positions.map((position) => {
-      return L.latLng(position[0], position[1]);
-    });
-    return L.latLngBounds(latLngs);
+  function SetMarkers({ bounds }) {
+    const map = useMap();
+
+    if (bounds[0].length === 2 || bounds[1].length === 2) {
+      map.fitBounds(bounds, { padding: [60, 60] });
+    }
+    if (bounds[0].length !== 2 || bounds[1].length !== 2) {
+      map.setZoom(10);
+    }
+
+    return (
+      <>
+        {bounds[0].length === 2 && (
+          <Marker position={bounds[0]}>
+            <Popup>Origem</Popup>
+          </Marker>
+        )}
+        {bounds[1].length === 2 && (
+          <Marker position={bounds[1]}>
+            <Popup>Destino</Popup>
+          </Marker>
+        )}
+      </>
+    );
   }
+  SetMarkers.propTypes = {
+    bounds: PropTypes.arrayOf(number).isRequired,
+  };
   return (
     <Container>
+      <h2>Nova viagem</h2>
       <Formik
         initialValues={{
           departureLocation: { name: '', latLon: [] },
-          arriveLocation: { name: '', latLon: [] },
+          arrivalLocation: { name: '', latLon: [] },
+          amount: 0,
         }}
         // validationSchema={validationSchema}
         onSubmit={handleSubmit}
@@ -92,37 +118,39 @@ function newTrip() {
                 )}
 
                 <SearchLocation name="departureLocation" label="Origem" />
-                <SearchLocation name="arriveLocation" label="Destino" />
+                <SearchLocation name="arrivalLocation" label="Destino" />
+
+                <label htmlFor="amount">
+                  Valor R$
+                  <Field
+                    type="number"
+                    id="amount"
+                    name="amount"
+                    placeholder="Valor"
+                  />
+                  <ErrorMessage name="amount" />
+                </label>
+                <button type="submit">Salvar</button>
               </FlexItem>
               <FlexItem>
                 <MapContainer
                   style={{ height: '100%', minHeight: '400px' }}
                   center={mapCenter}
-                  zoom="10"
-                  bounds={getBounds([
-                    [-6.8937, -38.5531],
-                    [-7.0212, -37.278],
-                  ])}
+                  zoom={7}
                 >
                   <TileLayer
                     attribution="&amp;copy Google"
                     url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
-                  {props.values.departureLocation.latLon.length === 2 && (
-                    <Marker position={props.values.departureLocation.latLon}>
-                      <Popup>Origem</Popup>
-                    </Marker>
-                  )}
-                  {props.values.arriveLocation.latLon.length === 2 && (
-                    <Marker position={props.values.arriveLocation.latLon}>
-                      <Popup>Origem</Popup>
-                    </Marker>
-                  )}
+                  <SetMarkers
+                    bounds={[
+                      props.values.departureLocation.latLon,
+                      props.values.arrivalLocation.latLon,
+                    ]}
+                  />
                 </MapContainer>
               </FlexItem>
             </FlexContainer>
-
-            <button type="submit">Salvar</button>
           </Form>
         )}
       </Formik>

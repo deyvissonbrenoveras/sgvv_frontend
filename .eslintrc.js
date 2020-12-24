@@ -29,5 +29,6 @@ module.exports = {
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],
     'no-underscore-dangle': 'off',
     'jsx-a11y/label-has-associated-control': 'off',
+    'no-unused-vars': 'off',
   },
 };

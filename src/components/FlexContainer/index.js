@@ -16,5 +16,5 @@ export const FlexItem = styled.div`
   @media (max-width: 600px) {
     width: 100%;
   }
-  overflow-y: hidden;
+  /* overflow-y: hidden; */
 `;
