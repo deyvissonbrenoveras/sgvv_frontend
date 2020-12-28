@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { darken } from 'polished';
 
 export const Container = styled.div`
   width: 100%;
@@ -15,4 +16,8 @@ export const AvatarImg = styled.img`
   border-radius: 50%;
   width: 32px;
   height: 32px;
+`;
+export const TripsList = styled.ul`
+  li {
+  }
 `;

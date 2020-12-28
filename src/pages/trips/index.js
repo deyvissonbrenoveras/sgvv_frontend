@@ -6,9 +6,11 @@ import {
   Marker,
   Tooltip,
   useMap,
+  useMapEvents,
+  ZoomControl,
 } from 'react-leaflet';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, AvatarContainer, AvatarImg } from './styles';
+import { Container, AvatarContainer, AvatarImg, TripsList } from './styles';
 import AddButton from '../../components/AddButton';
 import ExpandableContainer from '../../components/ExpandableContainer';
 import { loadTripsRequest } from '../../store/modules/trip/actions';
@@ -16,7 +18,7 @@ import { loadTripsRequest } from '../../store/modules/trip/actions';
 function trips() {
   const dispatch = useDispatch();
   const mapCenter = [-6.8909, -38.5566];
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
 
   const { trips: tripsList } = useSelector((state) => state.trip);
 
@@ -44,6 +46,20 @@ function trips() {
     if (mapExpanded) {
       map.invalidateSize();
     }
+    const mapEvents = useMapEvents({
+      resize: () => {
+        setTimeout(() => {
+          mapEvents.invalidateSize();
+          map.fitBounds(locations, { padding: expanded ? [60, 60] : [0, 0] });
+        }, 400);
+      },
+      zoom: () => {
+        setTimeout(() => {
+          mapEvents.invalidateSize();
+        }, 400);
+      },
+    });
+
     return (
       <>
         {tripsList &&
@@ -84,13 +100,26 @@ function trips() {
   return (
     <Container>
       <AddButton to="/novaviagem" />
+
+      {!expanded && tripsList && tripsList.length > 0 && (
+        <TripsList>
+          {tripsList.map((trip) => (
+            <li>
+              <a href="/">{trip.driver.name}</a>
+            </li>
+          ))}
+        </TripsList>
+      )}
+
       <ExpandableContainer expanded={expanded} toggleExpanded={toggleExpanded}>
         <MapContainer
           style={{ height: '100%', minHeight: expanded ? '400px' : '100%' }}
           center={mapCenter}
           zoom={7}
-          zoomControl
+          zoomControl={false}
         >
+          {expanded && <ZoomControl />}
+
           <TileLayer
             attribution="&amp;copy Google"
             url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
