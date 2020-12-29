@@ -17,7 +17,26 @@ export const AvatarImg = styled.img`
   width: 32px;
   height: 32px;
 `;
-export const TripsList = styled.ul`
-  li {
+export const TripsTable = styled.table`
+  border-collapse: collapse;
+  thead {
+    tr {
+      th {
+        font-size: 14px;
+        letter-spacing: 2px;
+        padding: 0 5px;
+      }
+    }
+  }
+  tbody {
+    padding: 5px;
+    width: 100%;
+    tr {
+      width: 100%;
+      td {
+        text-align: center;
+        padding: 5px;
+      }
+    }
   }
 `;

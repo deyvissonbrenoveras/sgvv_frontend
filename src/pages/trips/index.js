@@ -10,10 +10,11 @@ import {
   ZoomControl,
 } from 'react-leaflet';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, AvatarContainer, AvatarImg, TripsList } from './styles';
+import { Container, AvatarContainer, AvatarImg, TripsTable } from './styles';
 import AddButton from '../../components/AddButton';
 import ExpandableContainer from '../../components/ExpandableContainer';
 import { loadTripsRequest } from '../../store/modules/trip/actions';
+import AvatarTableItem from '../../components/AvatarTableItem';
 
 function trips() {
   const dispatch = useDispatch();
@@ -102,13 +103,47 @@ function trips() {
       <AddButton to="/novaviagem" />
 
       {!expanded && tripsList && tripsList.length > 0 && (
-        <TripsList>
-          {tripsList.map((trip) => (
-            <li>
-              <a href="/">{trip.driver.name}</a>
-            </li>
-          ))}
-        </TripsList>
+        <TripsTable>
+          <thead>
+            <tr>
+              <th>Motorista</th>
+              <th>Veículo</th>
+              <th>Local de Saída</th>
+              <th>Local de Destino</th>
+              <th>Hora da partida</th>
+              <th>Hora de retorno</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tripsList.map((trip) => (
+              <tr>
+                <td>
+                  <AvatarTableItem
+                    src={(trip.driver.avatar && trip.driver.avatar.url) || ''}
+                    label={trip.driver ? trip.driver.name : ''}
+                  />
+                </td>
+                <td>
+                  <AvatarTableItem
+                    src={
+                      (trip.vehicle &&
+                        trip.vehicle.image &&
+                        trip.vehicle.image.url) ||
+                      ''
+                    }
+                    label={trip.vehicle ? trip.vehicle.description : ''}
+                  />
+                </td>
+                <td>{trip.departureLocation.name.split(',')[0]}</td>
+                <td>{trip.arrivalLocation.name.split(',')[0]}</td>
+                <td>{trip.startTime}</td>
+                <td>{trip.endTime || ''}</td>
+                <td>{trip.finished ? 'Concluída' : 'Andamento'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </TripsTable>
       )}
 
       <ExpandableContainer expanded={expanded} toggleExpanded={toggleExpanded}>
