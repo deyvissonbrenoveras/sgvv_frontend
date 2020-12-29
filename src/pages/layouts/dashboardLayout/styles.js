@@ -38,6 +38,11 @@ export const Content = styled.div`
       flex-direction: column;
     }
   }
+  h2 {
+    margin: 0;
+    margin-bottom: 10px;
+    text-align: center;
+  }
 `;
 export const BottomMenu = styled.ul`
   flex: 0.1;

@@ -15,6 +15,7 @@ import AddButton from '../../components/AddButton';
 import ExpandableContainer from '../../components/ExpandableContainer';
 import { loadTripsRequest } from '../../store/modules/trip/actions';
 import AvatarTableItem from '../../components/AvatarTableItem';
+import history from '../../services/history';
 
 function trips() {
   const dispatch = useDispatch();
@@ -65,7 +66,7 @@ function trips() {
       <>
         {tripsList &&
           tripsList.map((trip) => (
-            <Marker position={trip.arrivalLocation.latLon}>
+            <Marker key={trip._id} position={trip.arrivalLocation.latLon}>
               {expanded && (
                 <Tooltip
                   direction="top"
@@ -96,72 +97,90 @@ function trips() {
     );
   }
   SetMarkers.propTypes = {
-    mapExpanded: PropTypes.func.isRequired,
+    mapExpanded: PropTypes.bool.isRequired,
   };
   return (
     <Container>
       <AddButton to="/novaviagem" />
-
       {!expanded && tripsList && tripsList.length > 0 && (
-        <TripsTable>
-          <thead>
-            <tr>
-              <th>Motorista</th>
-              <th>Veículo</th>
-              <th>Local de Saída</th>
-              <th>Local de Destino</th>
-              <th>Hora da partida</th>
-              <th>Hora de retorno</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tripsList.map((trip) => (
+        <>
+          <h2>Viagens</h2>
+          <TripsTable>
+            <thead>
               <tr>
-                <td>
-                  <AvatarTableItem
-                    src={(trip.driver.avatar && trip.driver.avatar.url) || ''}
-                    label={trip.driver ? trip.driver.name : ''}
-                  />
-                </td>
-                <td>
-                  <AvatarTableItem
-                    src={
-                      (trip.vehicle &&
-                        trip.vehicle.image &&
-                        trip.vehicle.image.url) ||
-                      ''
-                    }
-                    label={trip.vehicle ? trip.vehicle.description : ''}
-                  />
-                </td>
-                <td>{trip.departureLocation.name.split(',')[0]}</td>
-                <td>{trip.arrivalLocation.name.split(',')[0]}</td>
-                <td>{trip.startTime}</td>
-                <td>{trip.endTime || ''}</td>
-                <td>{trip.finished ? 'Concluída' : 'Andamento'}</td>
+                <th>Motorista</th>
+                <th>Veículo</th>
+                <th>Local de Saída</th>
+                <th>Local de Destino</th>
+                <th>Hora da partida</th>
               </tr>
-            ))}
-          </tbody>
-        </TripsTable>
+            </thead>
+            <tbody>
+              {tripsList.map((trip) => (
+                <tr
+                  key={trip._id}
+                  onClick={() => {
+                    history.push(`/editarviagem/${trip._id}`);
+                  }}
+                >
+                  <td>
+                    <AvatarTableItem
+                      src={
+                        (trip.driver &&
+                          trip.driver.avatar &&
+                          trip.driver.avatar.url) ||
+                        ''
+                      }
+                      label={trip.driver ? trip.driver.name : ''}
+                    />
+                  </td>
+                  <td>
+                    <AvatarTableItem
+                      src={
+                        (trip.vehicle &&
+                          trip.vehicle.image &&
+                          trip.vehicle.image.url) ||
+                        ''
+                      }
+                      label={trip.vehicle ? trip.vehicle.description : ''}
+                    />
+                  </td>
+                  <td>{trip.departureLocation.name.split(',')[0]}</td>
+                  <td>{trip.arrivalLocation.name.split(',')[0]}</td>
+                  <td>
+                    {`${new Date(
+                      trip.startTime
+                    ).toLocaleDateString()} ${new Date(
+                      trip.startTime
+                    ).toLocaleTimeString()}`}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </TripsTable>
+        </>
       )}
-
-      <ExpandableContainer expanded={expanded} toggleExpanded={toggleExpanded}>
-        <MapContainer
-          style={{ height: '100%', minHeight: expanded ? '400px' : '100%' }}
-          center={mapCenter}
-          zoom={7}
-          zoomControl={false}
+      {tripsList && tripsList.length > 0 && (
+        <ExpandableContainer
+          expanded={expanded}
+          toggleExpanded={toggleExpanded}
         >
-          {expanded && <ZoomControl />}
+          <MapContainer
+            style={{ height: '100%', minHeight: expanded ? '400px' : '100%' }}
+            center={mapCenter}
+            zoom={7}
+            zoomControl={false}
+          >
+            {expanded && <ZoomControl />}
 
-          <TileLayer
-            attribution="&amp;copy Google"
-            url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          {tripsList && <SetMarkers mapExpanded={expanded} />}
-        </MapContainer>
-      </ExpandableContainer>
+            <TileLayer
+              attribution="&amp;copy Google"
+              url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {tripsList && <SetMarkers mapExpanded={expanded} />}
+          </MapContainer>
+        </ExpandableContainer>
+      )}
     </Container>
   );
 }
