@@ -75,27 +75,18 @@ function newTrip() {
           <Form>
             <FlexContainer>
               <FlexItem>
-                <label htmlFor="startTime">
-                  Hora da partida
-                  <Field
-                    type="datetime-local"
-                    id="startTime"
-                    name="startTime"
-                    placeholder="Hora da partida"
-                  />
-                  <ErrorMessage name="startTime" />
-                </label>
                 {loadingDrivers ? (
                   'Carregando motoristas...'
                 ) : (
                   <label htmlFor="driver">
                     Motorista
                     <Field as="select" name="driver">
+                      <option value="" selected disabled hidden>
+                        Selecione o motorista
+                      </option>
                       {driversList &&
-                        driversList.map((driver, index) => (
-                          <option value={driver._id} selected={index === 0}>
-                            {driver.name}
-                          </option>
+                        driversList.map((driver) => (
+                          <option value={driver._id}>{driver.name}</option>
                         ))}
                     </Field>
                   </label>
@@ -107,6 +98,9 @@ function newTrip() {
                   <label htmlFor="vehicle">
                     Veículos
                     <Field as="select" name="vehicle">
+                      <option value="" selected disabled hidden>
+                        Selecione o veículo
+                      </option>
                       {vehiclesList &&
                         vehiclesList.map((vehicle) => (
                           <option value={vehicle._id}>

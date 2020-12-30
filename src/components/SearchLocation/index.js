@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useField } from 'formik';
 import PropTypes from 'prop-types';
 import Nominatim from 'nominatim-geocoder';
-import { Container, LocationList, ClearButton } from './styles';
+import { Container, LocationList, ClearButton, LoadingIcon } from './styles';
 
 function SearchLocation({ name, label }) {
   const geocoder = new Nominatim();
@@ -16,15 +16,18 @@ function SearchLocation({ name, label }) {
   const [inputState, setInputState] = useState({ value: '', readOnly: false });
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [clearVisible, setClearVisible] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   let timer = null;
   async function handleChange(e) {
     clearTimeout(timer);
     setInputState({ ...inputState, value: e.target.value });
     if (!selectedLocation) {
+      setLoading(true);
       timer = setTimeout(async () => {
+        setLoading(true);
         const response = await geocoder.search({ q: e.target.value });
         setSearchResult({ visible: true, locations: response });
+        setLoading(false);
       }, 2000);
     }
   }
@@ -61,6 +64,8 @@ function SearchLocation({ name, label }) {
         <ClearButton visible={clearVisible} type="button" onClick={handleClear}>
           x
         </ClearButton>
+        <LoadingIcon loading={loading} />
+
         <br />
         <input
           name={name}
@@ -69,6 +74,7 @@ function SearchLocation({ name, label }) {
           value={inputState.value}
           readOnly={inputState.readOnly}
           placeholder="Pesquise um local..."
+          autoComplete="off"
         />
         <LocationList visible={searchResult.visible}>
           {searchResult.locations &&

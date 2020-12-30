@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { darken } from 'polished';
+import { VscLoading } from 'react-icons/vsc';
 
 export const Container = styled.div`
   position: relative;
@@ -45,4 +46,30 @@ export const ClearButton = styled.button`
   position: absolute;
   right: 0;
   top: 45%;
+`;
+
+export const LoadingIcon = styled(VscLoading)`
+  display: ${(props) => (props.loading ? 'block' : 'none')};
+  position: absolute;
+  right: 2px;
+  top: 55%;
+  -webkit-animation: spin 2s linear infinite;
+  -moz-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+  @-moz-keyframes spin {
+    100% {
+      -moz-transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes spin {
+    100% {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  @keyframes spin {
+    100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+    }
+  }
 `;

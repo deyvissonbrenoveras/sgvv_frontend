@@ -1,8 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import PropType from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { IoArrowForwardSharp } from 'react-icons/io5';
+import {
+  differenceInHours,
+  differenceInMinutes,
+  formatDistance,
+} from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
 import { BiTimeFive } from 'react-icons/bi';
 import { MdLocationOn } from 'react-icons/md';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Tooltip,
+  useMap,
+  useMapEvents,
+  ZoomControl,
+} from 'react-leaflet';
 import {
   Container,
   AvatarContainer,
@@ -14,87 +30,216 @@ import AvatarTableItem from '../../components/AvatarTableItem';
 
 function updateTrip({ match }) {
   const dispatch = useDispatch();
+  const mapCenter = [-6.8909, -38.5566];
+  const [trip, setTrip] = useState({});
   const { _id } = match.params;
-  const { loading, trip } = useSelector((state) => state.trip);
+  const { loading, trip: tripToUpdate } = useSelector((state) => state.trip);
 
   useEffect(() => {
     dispatch(loadTripRequest(_id));
   }, []);
   useEffect(() => {
-    console.tron.log(trip);
-  }, [trip]);
+    const localStartTime = `${new Date(
+      tripToUpdate.startTime
+    ).toLocaleDateString()} ${new Date(
+      tripToUpdate.startTime
+    ).toLocaleTimeString()}`;
+
+    const localEndTime = tripToUpdate.endTime
+      ? `${new Date(tripToUpdate.endTime).toLocaleDateString()} ${new Date(
+          tripToUpdate.endTime
+        ).toLocaleTimeString()}`
+      : '--/--/-- --:--';
+
+    // const hoursDifference = differenceInHours(
+    //   tripToUpdate.endTime
+    //     ? new Date(tripToUpdate.endTime)
+    //     : new Date(Date.now()),
+    //   new Date(tripToUpdate.startTime)
+    // );
+    // const days = Math.floor(hoursDifference / 24);
+    // const hours = hoursDifference % 24;
+    // const minutes = differenceInMinutes(
+    //   tripToUpdate.endTime
+    //     ? new Date(tripToUpdate.endTime)
+    //     : new Date(Date.now()),
+    //   new Date(tripToUpdate.startTime)
+    // );
+    // let timeDifference = days > 0 ? `${days} dias` : '';
+    // timeDifference += days > 0 && hours > 0 ? ' e ' : '';
+    // timeDifference +=
+    //   hours > 0
+    //     ? `${hours} ${hours === 1 ? 'hora' : 'horas'}.`
+    //     : `${days === 0 ? `${minutes} minutos.` : ''}`;
+    const timeDifference = formatDistance(
+      new Date(tripToUpdate.startTime),
+      tripToUpdate.endTime
+        ? new Date(tripToUpdate.endTime)
+        : new Date(Date.now()),
+      { locale: ptBR, includeSeconds: false }
+    );
+    setTrip({ ...tripToUpdate, timeDifference, localEndTime, localStartTime });
+  }, [tripToUpdate]);
+
+  function SetMarkers({ departureLocation, arrivalLocation }) {
+    const map = useMap();
+    map.invalidateSize();
+
+    map.fitBounds([departureLocation, arrivalLocation], {
+      padding: [80, 80],
+    });
+    // map.setZoom(7.5);
+
+    const mapEvents = useMapEvents({
+      resize: () => {
+        setTimeout(() => {
+          mapEvents.invalidateSize();
+          map.fitBounds([departureLocation, arrivalLocation], {
+            padding: [60, 60],
+          });
+        }, 400);
+      },
+      zoom: () => {
+        setTimeout(() => {
+          mapEvents.invalidateSize();
+        }, 400);
+      },
+    });
+
+    return (
+      <>
+        <Marker position={departureLocation}>
+          <Tooltip direction="top" offset={[-15, -10]} opacity={1} permanent>
+            Saída
+          </Tooltip>
+        </Marker>
+        <Marker position={arrivalLocation}>
+          <Tooltip direction="top" offset={[-15, -10]} opacity={1} permanent>
+            Destino
+          </Tooltip>
+        </Marker>
+      </>
+    );
+  }
+  SetMarkers.propTypes = {
+    departureLocation: PropType.arrayOf(PropType.number).isRequired,
+    arrivalLocation: PropType.arrayOf(PropType.number).isRequired,
+  };
   return (
     <Container>
-      <AvatarContainer>
-        <div>
-          <h2>Motorista</h2>
-          <AvatarTableItem
-            large
-            src={
-              (trip.driver && trip.driver.avatar && trip.driver.avatar.url) ||
-              ''
-            }
-            label={trip.driver ? trip.driver.name : ''}
-          />
-        </div>
-        <div>
-          <h2>Veículo</h2>
-          <AvatarTableItem
-            large
-            src={
-              (trip.vehicle && trip.vehicle.image && trip.vehicle.image.url) ||
-              ''
-            }
-            label={trip.vehicle ? trip.vehicle.description : ''}
-          />
-        </div>
-      </AvatarContainer>
-      <LocationContainer>
-        <div>
-          <div>
-            <h2>Local de Saída</h2>
-            <MdLocationOn />
-          </div>
-          <h3>
-            {(trip.departureLocation &&
-              trip.departureLocation.name.split(',')[0]) ||
-              ''}
-          </h3>
-        </div>
-        <IoArrowForwardSharp />
-        <div>
-          <div>
-            <h2>Local de Chegada</h2>
-            <MdLocationOn />
-          </div>
-          <h3>
-            {(trip.arrivalLocation &&
-              trip.arrivalLocation.name.split(',')[0]) ||
-              ''}
-          </h3>
-        </div>
-      </LocationContainer>
-      <TimeContainer>
-        <div>
-          <h2>Hora da partida</h2>
-          <h3>
-            {`${new Date(trip.startTime).toLocaleDateString()} ${new Date(
-              trip.startTime
-            ).toLocaleTimeString()}`}
-          </h3>
-        </div>
-        <BiTimeFive />
-        <div>
-          <h2>Hora da chegada</h2>
-          <h3>
-            {trip.endTime
-              ? `${new Date(trip.endTime).toLocaleDateString()} ${new Date(
-                  trip.endtTime
-                ).toLocaleTimeString()}`
-              : '--/--/-- --:--'}
-          </h3>
-        </div>
-      </TimeContainer>
+      {loading ? (
+        'Carregando...'
+      ) : (
+        <>
+          <AvatarContainer>
+            <div>
+              <h2>Motorista</h2>
+              <AvatarTableItem
+                large
+                src={
+                  (trip.driver &&
+                    trip.driver.avatar &&
+                    trip.driver.avatar.url) ||
+                  ''
+                }
+                label={trip.driver ? trip.driver.name : ''}
+              />
+            </div>
+            <div>
+              {trip.finished ? (
+                'Viagem encerrada'
+              ) : (
+                <button type="button">Encerrar viagem</button>
+              )}
+            </div>
+            <div>
+              <h2>Veículo</h2>
+              <AvatarTableItem
+                large
+                src={
+                  (trip.vehicle &&
+                    trip.vehicle.image &&
+                    trip.vehicle.image.url) ||
+                  ''
+                }
+                label={trip.vehicle ? trip.vehicle.description : ''}
+              />
+            </div>
+          </AvatarContainer>
+          <LocationContainer>
+            <div>
+              <div>
+                <h2>Saída</h2>
+                <MdLocationOn />
+              </div>
+              <h3>
+                {(trip.departureLocation &&
+                  trip.departureLocation.name.split(',')[0]) ||
+                  ''}
+              </h3>
+            </div>
+            <IoArrowForwardSharp />
+            <div>
+              <div>
+                <h2>Destino</h2>
+                <MdLocationOn />
+              </div>
+              <h3>
+                {(trip.arrivalLocation &&
+                  trip.arrivalLocation.name.split(',')[0]) ||
+                  ''}
+              </h3>
+            </div>
+          </LocationContainer>
+          <TimeContainer>
+            <div>
+              <h2>Hora da partida</h2>
+              <h3>{trip.localStartTime}</h3>
+            </div>
+            <div>
+              <BiTimeFive />
+              <div>Tempo decorrido:</div>
+              <div>{trip.timeDifference}</div>
+            </div>
+            <div>
+              <h2>Hora do retorno</h2>
+              <h3>{trip.localEndTime}</h3>
+            </div>
+          </TimeContainer>
+          <MapContainer
+            style={{
+              width: '90%',
+              // height: '100%',
+              // minHeight: '400px',
+              height: '350px',
+              margin: '0 auto',
+            }}
+            center={mapCenter}
+            zoom={7}
+            zoomControl={false}
+            doubleClickZoom={false}
+            closePopupOnClick={false}
+            false
+            dragging={false}
+            zoomSnap={false}
+            zoomDelta={false}
+            trackResize={false}
+            touchZoom={false}
+            scrollWheelZoom={false}
+          >
+            <TileLayer
+              attribution="&amp;copy Google"
+              url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            {trip && trip.departureLocation && trip.arrivalLocation && (
+              <SetMarkers
+                departureLocation={trip.departureLocation.latLon}
+                arrivalLocation={trip.arrivalLocation.latLon}
+              />
+            )}
+          </MapContainer>
+        </>
+      )}
     </Container>
   );
 }

@@ -3,7 +3,7 @@ import { darken } from 'polished';
 import { Link } from 'react-router-dom';
 
 export const Container = styled(Link)`
-  z-index: 1000;
+  z-index: 9999;
   position: absolute;
   bottom: 30px;
   right: 40px;
