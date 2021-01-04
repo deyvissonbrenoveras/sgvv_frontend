@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import * as Yup from 'yup';
 import PropTypes, { number } from 'prop-types';
 
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage, yupToFormErrors } from 'formik';
 // import L from 'leaflet';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import SearchLocation from '../../components/SearchLocation';
@@ -15,6 +16,33 @@ import { addTripRequest } from '../../store/modules/trip/actions';
 
 function newTrip() {
   const dispatch = useDispatch();
+  const validationSchema = Yup.object().shape({
+    driver: Yup.string().required('O motorista é obrigatório'),
+    vehicle: Yup.string().required('O veículo é obrigatório'),
+    departureLocation: Yup.object()
+      .shape({
+        name: Yup.string().required(),
+        latLon: Yup.array()
+          .of(Yup.number().required())
+          .min(2)
+          .max(2)
+          .required(),
+      })
+      .required('O local de saída obrigatório'),
+    arrivalLocation: Yup.object()
+      .shape({
+        name: Yup.string().required(),
+        latLon: Yup.array()
+          .of(Yup.number().required())
+          .min(2)
+          .max(2)
+          .required(),
+      })
+      .required('O local de destino é obrigatório'),
+    amount: Yup.number()
+      .min(0, 'A quantia não pode ser negativa')
+      .required('A quantia solicitada é obrigatória'),
+  });
   const { loading: loadingDrivers, drivers: driversList } = useSelector(
     (state) => state.driver
   );
@@ -45,7 +73,7 @@ function newTrip() {
       <>
         {bounds[0].length === 2 && (
           <Marker position={bounds[0]}>
-            <Popup>Origem</Popup>
+            <Popup>Saída</Popup>
           </Marker>
         )}
         {bounds[1].length === 2 && (
@@ -63,12 +91,14 @@ function newTrip() {
     <Container>
       <h2>Nova viagem</h2>
       <Formik
+        validationSchema={validationSchema}
         initialValues={{
+          driver: '',
+          vehicle: '',
           departureLocation: { name: '', latLon: [] },
           arrivalLocation: { name: '', latLon: [] },
           amount: 0,
         }}
-        // validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
         {(props) => (
@@ -89,9 +119,9 @@ function newTrip() {
                           <option value={driver._id}>{driver.name}</option>
                         ))}
                     </Field>
+                    <ErrorMessage name="driver" />
                   </label>
                 )}
-
                 {loadingVehicles ? (
                   'Carregando veículos...'
                 ) : (
@@ -108,14 +138,19 @@ function newTrip() {
                           </option>
                         ))}
                     </Field>
+                    <ErrorMessage name="vehicle" />
                   </label>
                 )}
-
-                <SearchLocation name="departureLocation" label="Origem" />
-                <SearchLocation name="arrivalLocation" label="Destino" />
-
+                <SearchLocation
+                  name="departureLocation"
+                  label="Local de saída"
+                />
+                <SearchLocation
+                  name="arrivalLocation"
+                  label="Local de destino"
+                />
                 <label htmlFor="amount">
-                  Valor R$
+                  Quantia solicitada R$
                   <Field
                     type="number"
                     id="amount"

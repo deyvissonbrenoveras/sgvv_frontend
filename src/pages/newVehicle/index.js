@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Container } from './styles';
 import Img from '../../components/Img';
 import { addVehicleRequest } from '../../store/modules/vehicle/actions';
+import { FlexContainer, FlexItem } from '../../components/FlexContainer';
 
 function newVehicle() {
   const dispatch = useDispatch();
@@ -35,72 +36,81 @@ function newVehicle() {
         onSubmit={handleSubmit}
       >
         <Form>
-          <Img name="image" />
+          <FlexContainer>
+            <FlexItem>
+              <Img name="image" />
+            </FlexItem>
+            <FlexItem>
+              <label htmlFor="description">
+                Descrição
+                <Field
+                  type="text"
+                  id="description"
+                  name="description"
+                  placeholder="Descrição"
+                />
+                <ErrorMessage name="description" />
+              </label>
 
-          <label htmlFor="description">
-            Descrição
-            <Field
-              type="text"
-              id="description"
-              name="description"
-              placeholder="Descrição"
-            />
-            <ErrorMessage name="description" />
-          </label>
+              <label htmlFor="model">
+                Modelo
+                <Field
+                  type="text"
+                  id="model"
+                  name="model"
+                  placeholder="Modelo"
+                />
+                <ErrorMessage name="model" />
+              </label>
 
-          <label htmlFor="model">
-            Modelo
-            <Field type="text" id="model" name="model" placeholder="Modelo" />
-            <ErrorMessage name="model" />
-          </label>
+              <label htmlFor="manufacturingYear">
+                Ano de fabricação
+                <Field
+                  type="number"
+                  id="manufacturingYear"
+                  name="manufacturingYear"
+                  placeholder="Ano de fabricação"
+                  min={1900}
+                  max={2099}
+                />
+                <ErrorMessage name="manufacturingYear" />
+              </label>
 
-          <label htmlFor="manufacturingYear">
-            Ano de fabricação
-            <Field
-              type="number"
-              id="manufacturingYear"
-              name="manufacturingYear"
-              placeholder="Ano de fabricação"
-              min={1900}
-              max={2099}
-            />
-            <ErrorMessage name="manufacturingYear" />
-          </label>
+              <label htmlFor="brand">
+                Fabricante
+                <Field
+                  type="text"
+                  id="brand"
+                  name="brand"
+                  placeholder="Fabricante"
+                />
+                <ErrorMessage name="brand" />
+              </label>
 
-          <label htmlFor="brand">
-            Fabricante
-            <Field
-              type="text"
-              id="brand"
-              name="brand"
-              placeholder="Fabricante"
-            />
-            <ErrorMessage name="Fabricante" />
-          </label>
+              <label htmlFor="paintColor">
+                Cor
+                <Field
+                  type="text"
+                  id="paintColor"
+                  name="paintColor"
+                  placeholder="Cor"
+                />
+                <ErrorMessage name="paintColor" />
+              </label>
 
-          <label htmlFor="paintColor">
-            Cor
-            <Field
-              type="text"
-              id="paintColor"
-              name="paintColor"
-              placeholder="Cor"
-            />
-            <ErrorMessage name="paintColor" />
-          </label>
-
-          <label htmlFor="licensePlate">
-            Placa
-            <Field
-              type="text"
-              id="licensePlate"
-              name="licensePlate"
-              placeholder="Placa"
-            />
-            <ErrorMessage name="licensePlate" />
-          </label>
-
-          <button type="submit">Salvar</button>
+              <label htmlFor="licensePlate">
+                Placa
+                <Field
+                  type="text"
+                  id="licensePlate"
+                  name="licensePlate"
+                  placeholder="Placa"
+                />
+                <ErrorMessage name="licensePlate" />
+              </label>
+              <button type="submit">Salvar</button>
+            </FlexItem>
+          </FlexContainer>
         </Form>
       </Formik>
     </Container>

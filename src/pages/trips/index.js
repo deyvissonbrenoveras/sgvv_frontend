@@ -16,6 +16,7 @@ import ExpandableContainer from '../../components/ExpandableContainer';
 import { loadTripsRequest } from '../../store/modules/trip/actions';
 import AvatarTableItem from '../../components/AvatarTableItem';
 import history from '../../services/history';
+import tripFilter from '../../util/TripFilter';
 
 function trips() {
   const dispatch = useDispatch();
@@ -23,16 +24,17 @@ function trips() {
   const [expanded, setExpanded] = useState(false);
 
   const { loading, trips: tripsList } = useSelector((state) => state.trip);
-
+  const [filter, setFilter] = useState(tripFilter.IN_PROGRESS);
   useEffect(() => {
     dispatch(loadTripsRequest());
   }, []);
 
-  useEffect(() => {
-    // console.tron.log(tripsList);
-  }, [tripsList]);
+  useEffect(() => {}, [tripsList]);
   function toggleExpanded() {
     setExpanded(!expanded);
+  }
+  function handleFilterChange(e) {
+    setFilter(Number(e.target.value));
   }
   function SetMarkers({ mapExpanded }) {
     const map = useMap();
@@ -108,6 +110,13 @@ function trips() {
         <>
           {!expanded && tripsList && tripsList.length > 0 && (
             <>
+              <select onChange={handleFilterChange}>
+                <option value={tripFilter.ALL}>Todas</option>
+                <option value={tripFilter.FINISHED}>Encerradas</option>
+                <option selected value={tripFilter.IN_PROGRESS}>
+                  Em andamento
+                </option>
+              </select>
               <h2>Viagens</h2>
               <TripsTable>
                 <thead>
@@ -120,46 +129,59 @@ function trips() {
                   </tr>
                 </thead>
                 <tbody>
-                  {tripsList.map((trip) => (
-                    <tr
-                      key={trip._id}
-                      onClick={() => {
-                        history.push(`/editarviagem/${trip._id}`);
-                      }}
-                    >
-                      <td>
-                        <AvatarTableItem
-                          src={
-                            (trip.driver &&
-                              trip.driver.avatar &&
-                              trip.driver.avatar.url) ||
-                            ''
-                          }
-                          label={trip.driver ? trip.driver.name : ''}
-                        />
-                      </td>
-                      <td>
-                        <AvatarTableItem
-                          src={
-                            (trip.vehicle &&
-                              trip.vehicle.image &&
-                              trip.vehicle.image.url) ||
-                            ''
-                          }
-                          label={trip.vehicle ? trip.vehicle.description : ''}
-                        />
-                      </td>
-                      <td>{trip.departureLocation.name.split(',')[0]}</td>
-                      <td>{trip.arrivalLocation.name.split(',')[0]}</td>
-                      <td>
-                        {`${new Date(
-                          trip.startTime
-                        ).toLocaleDateString()} ${new Date(
-                          trip.startTime
-                        ).toLocaleTimeString()}`}
-                      </td>
-                    </tr>
-                  ))}
+                  {tripsList
+                    .filter((trip) => {
+                      switch (filter) {
+                        case tripFilter.FINISHED:
+                          return trip.finished;
+                        case tripFilter.IN_PROGRESS:
+                          return !trip.finished;
+                        case tripFilter.ALL:
+                          return true;
+                        default:
+                          return false;
+                      }
+                    })
+                    .map((trip) => (
+                      <tr
+                        key={trip._id}
+                        onClick={() => {
+                          history.push(`/editarviagem/${trip._id}`);
+                        }}
+                      >
+                        <td>
+                          <AvatarTableItem
+                            src={
+                              (trip.driver &&
+                                trip.driver.avatar &&
+                                trip.driver.avatar.url) ||
+                              ''
+                            }
+                            label={trip.driver ? trip.driver.name : ''}
+                          />
+                        </td>
+                        <td>
+                          <AvatarTableItem
+                            src={
+                              (trip.vehicle &&
+                                trip.vehicle.image &&
+                                trip.vehicle.image.url) ||
+                              ''
+                            }
+                            label={trip.vehicle ? trip.vehicle.description : ''}
+                          />
+                        </td>
+                        <td>{trip.departureLocation.name.split(',')[0]}</td>
+                        <td>{trip.arrivalLocation.name.split(',')[0]}</td>
+                        <td>
+                          {`${new Date(
+                            trip.startTime
+                          ).toLocaleDateString()} ${new Date(
+                            trip.startTime
+                          ).toLocaleTimeString()}`}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </TripsTable>
             </>

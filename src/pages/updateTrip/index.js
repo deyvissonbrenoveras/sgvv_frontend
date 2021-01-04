@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import PropType from 'prop-types';
+import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { IoArrowForwardSharp } from 'react-icons/io5';
-import {
-  differenceInHours,
-  differenceInMinutes,
-  formatDistance,
-} from 'date-fns';
+import { IoArrowForwardSharp, IoTimeSharp } from 'react-icons/io5';
+import { formatDistance } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { BiTimeFive } from 'react-icons/bi';
 import { MdLocationOn } from 'react-icons/md';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+
 import {
   MapContainer,
   TileLayer,
@@ -17,19 +16,30 @@ import {
   Tooltip,
   useMap,
   useMapEvents,
-  ZoomControl,
 } from 'react-leaflet';
 import {
   Container,
   AvatarContainer,
   LocationContainer,
   TimeContainer,
+  CloseButton,
+  AmountContainer,
+  AmountBox,
+  Amount,
+  AmountSpent,
+  ReturnedAmount,
 } from './styles';
-import { loadTripRequest } from '../../store/modules/trip/actions';
+import {
+  loadTripRequest,
+  updateTripRequest,
+} from '../../store/modules/trip/actions';
 import AvatarTableItem from '../../components/AvatarTableItem';
 
 function updateTrip({ match }) {
   const dispatch = useDispatch();
+  const validationSchema = Yup.object().shape({
+    amountSpent: Yup.number().positive('O valor deve ser positivo'),
+  });
   const mapCenter = [-6.8909, -38.5566];
   const [trip, setTrip] = useState({});
   const { _id } = match.params;
@@ -38,6 +48,9 @@ function updateTrip({ match }) {
   useEffect(() => {
     dispatch(loadTripRequest(_id));
   }, []);
+  function handleSubmit(values) {
+    dispatch(updateTripRequest(_id, values));
+  }
   useEffect(() => {
     const localStartTime = `${new Date(
       tripToUpdate.startTime
@@ -51,34 +64,27 @@ function updateTrip({ match }) {
         ).toLocaleTimeString()}`
       : '--/--/-- --:--';
 
-    // const hoursDifference = differenceInHours(
-    //   tripToUpdate.endTime
-    //     ? new Date(tripToUpdate.endTime)
-    //     : new Date(Date.now()),
-    //   new Date(tripToUpdate.startTime)
-    // );
-    // const days = Math.floor(hoursDifference / 24);
-    // const hours = hoursDifference % 24;
-    // const minutes = differenceInMinutes(
-    //   tripToUpdate.endTime
-    //     ? new Date(tripToUpdate.endTime)
-    //     : new Date(Date.now()),
-    //   new Date(tripToUpdate.startTime)
-    // );
-    // let timeDifference = days > 0 ? `${days} dias` : '';
-    // timeDifference += days > 0 && hours > 0 ? ' e ' : '';
-    // timeDifference +=
-    //   hours > 0
-    //     ? `${hours} ${hours === 1 ? 'hora' : 'horas'}.`
-    //     : `${days === 0 ? `${minutes} minutos.` : ''}`;
-    const timeDifference = formatDistance(
-      new Date(tripToUpdate.startTime),
-      tripToUpdate.endTime
-        ? new Date(tripToUpdate.endTime)
-        : new Date(Date.now()),
-      { locale: ptBR, includeSeconds: false }
-    );
-    setTrip({ ...tripToUpdate, timeDifference, localEndTime, localStartTime });
+    let timeDifference = '';
+    if (tripToUpdate && tripToUpdate.startTime) {
+      timeDifference = formatDistance(
+        new Date(tripToUpdate.startTime),
+        tripToUpdate.endTime
+          ? new Date(tripToUpdate.endTime)
+          : new Date(Date.now()),
+        { locale: ptBR, includeSeconds: false }
+      );
+    }
+    let returnedAmount = 0;
+    if (trip.finished) {
+      returnedAmount = tripToUpdate.amount - tripToUpdate.amountSpent;
+    }
+    setTrip({
+      ...tripToUpdate,
+      timeDifference,
+      localEndTime,
+      localStartTime,
+      returnedAmount,
+    });
   }, [tripToUpdate]);
 
   function SetMarkers({ departureLocation, arrivalLocation }) {
@@ -145,13 +151,57 @@ function updateTrip({ match }) {
                 label={trip.driver ? trip.driver.name : ''}
               />
             </div>
-            <div>
-              {trip.finished ? (
-                'Viagem encerrada'
+            <AmountContainer>
+              <div>
+                <AmountBox>
+                  <div>Quantia solicitada:</div>
+                  <Amount>{`R$ ${trip.amount}`}</Amount>
+                </AmountBox>
+                {trip.finished ? (
+                  <AmountBox>
+                    <div>Quantia gasta:</div>
+                    <AmountSpent>{`R$ ${trip.amountSpent}`}</AmountSpent>
+                  </AmountBox>
+                ) : (
+                  <Formik
+                    initialValues={{ amountSpent: 0 }}
+                    enableReinitialize
+                    onSubmit={handleSubmit}
+                    validationSchema={validationSchema}
+                  >
+                    <Form>
+                      <label>
+                        Quantia gasta:
+                        <Field
+                          type="number"
+                          id="amountSpent"
+                          name="amountSpent"
+                          placeholder="Insira a quantia"
+                          min="0"
+                        />
+                        <ErrorMessage name="amountSpent" />
+                      </label>
+
+                      <CloseButton type="submit">Encerrar viagem</CloseButton>
+                    </Form>
+                  </Formik>
+                )}
+              </div>
+
+              {trip && trip.finished ? (
+                <>
+                  <AmountBox>
+                    <div>Retornado: </div>
+                    <ReturnedAmount>
+                      {`R$ ${trip.returnedAmount}`}
+                    </ReturnedAmount>
+                  </AmountBox>
+                  <div>Viagem encerrada</div>
+                </>
               ) : (
-                <button type="button">Encerrar viagem</button>
+                ''
               )}
-            </div>
+            </AmountContainer>
             <div>
               <h2>Veículo</h2>
               <AvatarTableItem

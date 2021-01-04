@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Container } from './styles';
 import Img from '../../components/Img';
 import { addDriverRequest } from '../../store/modules/driver/actions';
+import { FlexContainer, FlexItem } from '../../components/FlexContainer';
 
 function newDriver() {
   const dispatch = useDispatch();
@@ -37,37 +38,42 @@ function newDriver() {
         onSubmit={handleSubmit}
       >
         <Form>
-          <Img name="avatar" />
+          <FlexContainer>
+            <FlexItem>
+              <Img name="avatar" />
+            </FlexItem>
+            <FlexItem>
+              <label htmlFor="name">
+                Nome
+                <Field type="text" id="name" name="name" placeholder="Nome" />
+                <ErrorMessage name="name" />
+              </label>
 
-          <label htmlFor="name">
-            Nome
-            <Field type="text" id="name" name="name" placeholder="Nome" />
-            <ErrorMessage name="name" />
-          </label>
+              <label htmlFor="password">
+                Senha
+                <Field
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Senha"
+                />
+                <ErrorMessage name="password" />
+              </label>
 
-          <label htmlFor="password">
-            Senha
-            <Field
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Senha"
-            />
-            <ErrorMessage name="password" />
-          </label>
+              <label htmlFor="confirmPassword">
+                Confirmar Senha
+                <Field
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  placeholder="Confirmar senha"
+                />
+                <ErrorMessage name="confirmPassword" />
+              </label>
 
-          <label htmlFor="confirmPassword">
-            Confirmar Senha
-            <Field
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              placeholder="Confirmar senha"
-            />
-            <ErrorMessage name="confirmPassword" />
-          </label>
-
-          <button type="submit">Salvar</button>
+              <button type="submit">Salvar</button>
+            </FlexItem>
+          </FlexContainer>
         </Form>
       </Formik>
     </Container>

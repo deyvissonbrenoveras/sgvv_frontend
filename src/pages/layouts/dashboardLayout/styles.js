@@ -29,13 +29,17 @@ export const Content = styled.div`
   position: relative;
   form {
     width: 100%;
-    max-width: 400px;
+    /* max-width: 400px; */
     display: flex;
     flex-direction: column;
     label {
       margin-top: 10px;
       display: flex;
       flex-direction: column;
+    }
+    button[type='submit'] {
+      margin-top: 15px;
+      width: 100%;
     }
   }
   h2 {

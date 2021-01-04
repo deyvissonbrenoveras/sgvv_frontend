@@ -5,7 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import Img from '../../components/Img';
 import { Container } from './styles';
-
+import { FlexContainer, FlexItem } from '../../components/FlexContainer';
 import {
   loadDriverRequest,
   updateDriverRequest,
@@ -34,7 +34,6 @@ function updateDriver({ match }) {
     dispatch(loadDriverRequest(_id));
   }, []);
   function handleSubmit(values) {
-    console.tron.log(values);
     dispatch(updateDriverRequest(_id, values));
   }
   return (
@@ -55,46 +54,51 @@ function updateDriver({ match }) {
           validationSchema={validationSchema}
         >
           <Form>
-            <Img name="avatar" />
+            <FlexContainer>
+              <FlexItem>
+                <Img name="avatar" />
+              </FlexItem>
+              <FlexItem>
+                <label htmlFor="name">
+                  Nome
+                  <Field type="text" id="name" name="name" placeholder="Nome" />
+                  <ErrorMessage name="name" />
+                </label>
 
-            <label htmlFor="name">
-              Nome
-              <Field type="text" id="name" name="name" placeholder="Nome" />
-              <ErrorMessage name="name" />
-            </label>
+                <label htmlFor="password">
+                  Senha atual
+                  <Field
+                    type="password"
+                    id="password"
+                    name="password"
+                    placeholder="Senha"
+                  />
+                  <ErrorMessage name="password" />
+                </label>
+                <label htmlFor="newPassword">
+                  Nova senha
+                  <Field
+                    type="password"
+                    id="newPassword"
+                    name="newPassword"
+                    placeholder="Nova senha"
+                  />
+                  <ErrorMessage name="newPassword" />
+                </label>
+                <label htmlFor="confirmNewPassword">
+                  Confirmar nova senha
+                  <Field
+                    type="password"
+                    id="confirmNewPassword"
+                    name="confirmNewPassword"
+                    placeholder="Confirmar Nova senha"
+                  />
+                  <ErrorMessage name="confirmNewPassword" />
+                </label>
 
-            <label htmlFor="password">
-              Senha atual
-              <Field
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Senha"
-              />
-              <ErrorMessage name="password" />
-            </label>
-            <label htmlFor="newPassword">
-              Nova senha
-              <Field
-                type="password"
-                id="newPassword"
-                name="newPassword"
-                placeholder="Nova senha"
-              />
-              <ErrorMessage name="newPassword" />
-            </label>
-            <label htmlFor="confirmNewPassword">
-              Confirmar nova senha
-              <Field
-                type="password"
-                id="confirmNewPassword"
-                name="confirmNewPassword"
-                placeholder="Confirmar Nova senha"
-              />
-              <ErrorMessage name="confirmNewPassword" />
-            </label>
-
-            <button type="submit">Salvar</button>
+                <button type="submit">Salvar</button>
+              </FlexItem>
+            </FlexContainer>
           </Form>
         </Formik>
       )}

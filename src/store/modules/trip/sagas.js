@@ -53,13 +53,13 @@ export function* updateRequest({ payload }) {
   try {
     const response = yield call(api.put, `trips/${_id}`, trip);
     yield put(updateTripSuccess(response.data));
-    cogoToast.success(`viagem atualizada com sucesso!`, {
+    cogoToast.success(`viagem encerrada com sucesso!`, {
       position: 'top-right',
     });
   } catch (err) {
     const message = err.response
       ? err.response.data.error
-      : `Falha ao atualizar a viagem, por favor tente novamente`;
+      : `Falha ao encerrar a viagem, por favor tente novamente`;
     cogoToast.error(message, {
       position: 'top-right',
     });
