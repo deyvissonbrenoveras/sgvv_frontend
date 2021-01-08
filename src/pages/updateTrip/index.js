@@ -38,7 +38,9 @@ import AvatarTableItem from '../../components/AvatarTableItem';
 function updateTrip({ match }) {
   const dispatch = useDispatch();
   const validationSchema = Yup.object().shape({
-    amountSpent: Yup.number().positive('O valor deve ser positivo'),
+    amountSpent: Yup.number()
+      .min(0, 'O valor não pode ser negativo')
+      .required('O valor gasto é obrigatório'),
   });
   const mapCenter = [-6.8909, -38.5566];
   const [trip, setTrip] = useState({});
