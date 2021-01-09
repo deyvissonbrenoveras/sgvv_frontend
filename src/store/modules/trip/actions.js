@@ -18,9 +18,10 @@ export function loadTripSuccess(trip) {
   };
 }
 
-export function loadTripsRequest() {
+export function loadTripsRequest(startTime, endTime) {
   return {
     type: '@trip/LOAD_ALL_REQUEST',
+    payload: { startTime, endTime },
   };
 }
 

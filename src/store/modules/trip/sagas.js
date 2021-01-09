@@ -8,9 +8,12 @@ import {
   updateTripSuccess,
 } from './actions';
 
-export function* loadAllRequest() {
+export function* loadAllRequest({ payload }) {
+  const { startTime, endTime } = payload;
   try {
-    const response = yield call(api.get, 'trips');
+    const response = yield call(api.get, 'trips', {
+      params: { startTime, endTime },
+    });
     const trips = response.data;
     yield put(loadTripsSuccess(trips));
   } catch (err) {

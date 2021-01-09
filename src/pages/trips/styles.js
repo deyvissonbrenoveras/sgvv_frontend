@@ -48,3 +48,52 @@ export const TripsTable = styled.table`
     }
   }
 `;
+export const FilterContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  padding: 5px;
+  font-size: 13px;
+  /* @media (max-width: 600px) {
+    flex-direction: column;
+  } */
+  form {
+    width: auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    input {
+      display: inline;
+      margin: 0 5px;
+      max-width: 135px;
+    }
+    label {
+      text-align: center;
+      display: inline;
+      margin: 0;
+    }
+    button[type='submit'] {
+      width: auto;
+      margin: 0;
+    }
+  }
+
+  svg {
+    font-size: 14px;
+  }
+  label {
+    padding: 2px;
+  }
+  select {
+    margin: 5px;
+  }
+`;
+
+export const DateFilter = styled.div`
+  font-size: 26px;
+  font-weight: bold;
+  /* border: 1px solid red; */
+`;
