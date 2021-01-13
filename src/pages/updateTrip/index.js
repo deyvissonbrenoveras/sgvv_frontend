@@ -8,7 +8,6 @@ import ptBR from 'date-fns/locale/pt-BR';
 import { BiTimeFive } from 'react-icons/bi';
 import { MdLocationOn } from 'react-icons/md';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-
 import {
   MapContainer,
   TileLayer,
@@ -37,16 +36,24 @@ import AvatarTableItem from '../../components/AvatarTableItem';
 
 function updateTrip({ match }) {
   const dispatch = useDispatch();
-  const validationSchema = Yup.object().shape({
-    amountSpent: Yup.number()
-      .min(0, 'O valor não pode ser negativo')
-      .required('O valor gasto é obrigatório'),
-  });
+
   const mapCenter = [-6.8909, -38.5566];
   const [trip, setTrip] = useState({});
   const { _id } = match.params;
   const { loading, trip: tripToUpdate } = useSelector((state) => state.trip);
 
+  const validationSchema = Yup.object().shape({
+    amountSpent: Yup.number()
+      .min(0, 'O valor não pode ser negativo')
+      .required('O valor gasto é obrigatório')
+      .test(
+        'amountSpent',
+        'O valor gasto não pode ser maior que o solicitado',
+        function amountSpent(amountSpentValue) {
+          return amountSpentValue <= trip.amount;
+        }
+      ),
+  });
   useEffect(() => {
     dispatch(loadTripRequest(_id));
   }, []);
@@ -166,7 +173,7 @@ function updateTrip({ match }) {
                   </AmountBox>
                 ) : (
                   <Formik
-                    initialValues={{ amountSpent: 0 }}
+                    initialValues={{ amountSpent: 0, password: '' }}
                     enableReinitialize
                     onSubmit={handleSubmit}
                     validationSchema={validationSchema}
@@ -182,6 +189,17 @@ function updateTrip({ match }) {
                           min="0"
                         />
                         <ErrorMessage name="amountSpent" />
+                      </label>
+                      <label>
+                        Senha:
+                        <Field
+                          type="password"
+                          id="password"
+                          name="password"
+                          placeholder="Insira a senha"
+                          min="0"
+                        />
+                        <ErrorMessage name="password" />
                       </label>
 
                       <CloseButton type="submit">Encerrar viagem</CloseButton>
