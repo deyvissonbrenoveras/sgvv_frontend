@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Container = styled.div`
-  /* position: ${(props) => (props.expanded ? 'relative' : 'absolute')}; */
+  position: ${(props) => (props.expanded ? 'relative' : 'absolute')};
   position: absolute;
   bottom: ${(props) => (props.expanded ? 'auto' : '20px')};
   top: ${(props) => (props.expanded ? '0' : 'auto')};
