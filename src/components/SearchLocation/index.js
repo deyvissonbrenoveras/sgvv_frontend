@@ -5,7 +5,7 @@ import Nominatim from 'nominatim-geocoder';
 import { Container, LocationList, ClearButton, LoadingIcon } from './styles';
 
 function SearchLocation({ name, label }) {
-  const geocoder = new Nominatim();
+  const geocoder = new Nominatim({ secure: true });
   const [, , helpers] = useField(name);
   const { setValue } = helpers;
 
