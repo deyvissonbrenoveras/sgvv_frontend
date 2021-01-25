@@ -9,10 +9,10 @@ import {
 } from './actions';
 
 export function* loadAllRequest({ payload }) {
-  const { startTime, endTime } = payload;
+  const { startTime, endTime, status } = payload;
   try {
     const response = yield call(api.get, 'trips', {
-      params: { startTime, endTime },
+      params: { startTime, endTime, status },
     });
     const trips = response.data;
     yield put(loadTripsSuccess(trips));
