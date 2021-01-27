@@ -57,9 +57,9 @@ export const FilterContainer = styled.div`
   align-items: center;
   padding: 5px;
   font-size: 13px;
-  /* @media (max-width: 600px) {
+  @media (max-width: 600px) {
     flex-direction: column;
-  } */
+  }
   form {
     width: auto;
     flex-direction: row;

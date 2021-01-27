@@ -13,6 +13,9 @@ import UpdateDriver from '../pages/updateDriver';
 import Trips from '../pages/trips';
 import NewTrip from '../pages/newTrip';
 import UpdateTrip from '../pages/updateTrip';
+import Users from '../pages/users';
+import UpdateUser from '../pages/updateUser';
+import NewUser from '../pages/newUser';
 
 export default function Routes() {
   return (
@@ -41,6 +44,16 @@ export default function Routes() {
       <Route path="/viagens" component={Trips} exact isPrivate />
       <Route path="/novaviagem" component={NewTrip} exact isPrivate />
       <Route path="/editarviagem/:_id" component={UpdateTrip} exact isPrivate />
+
+      <Route path="/usuarios" component={Users} exact isPrivate />
+      <Route path="/novousuario" component={NewUser} exact isPrivate />
+
+      <Route
+        path="/editarusuario/:_id"
+        component={UpdateUser}
+        exact
+        isPrivate
+      />
     </Switch>
   );
 }

@@ -48,6 +48,32 @@ export const Content = styled.div`
     text-align: center;
   }
 `;
+export const HeadContainer = styled.div`
+  display: flex;
+  align-items: center;
+  h1 {
+    text-align: center;
+    font-size: 13px;
+    margin: 0 0 5px 0;
+    padding: 0;
+    margin-left: auto;
+  }
+  button {
+    outline: 0;
+    border: 0;
+    background: transparent;
+    margin-left: auto;
+    border-radius: 50%;
+    padding: 4px;
+    width: 32px;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+    svg {
+      font-size: 18px;
+    }
+  }
+`;
 export const BottomMenu = styled.ul`
   flex: 0.1;
   width: 100%;
