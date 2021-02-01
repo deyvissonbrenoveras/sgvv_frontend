@@ -121,7 +121,10 @@ function newTrip() {
                       </option>
                       {driversList &&
                         driversList.map((driver) => (
-                          <option value={driver._id}>{driver.name}</option>
+                          <option disabled={driver.busy} value={driver._id}>
+                            {driver.name}
+                            {driver.busy ? ' - (Em viagem)' : ''}
+                          </option>
                         ))}
                     </Field>
                     <ErrorMessage name="driver" />
@@ -138,8 +141,9 @@ function newTrip() {
                       </option>
                       {vehiclesList &&
                         vehiclesList.map((vehicle) => (
-                          <option value={vehicle._id}>
+                          <option disabled={vehicle.busy} value={vehicle._id}>
                             {vehicle.description}
+                            {vehicle.busy ? ' - (Em viagem)' : ''}
                           </option>
                         ))}
                     </Field>
