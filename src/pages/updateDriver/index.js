@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Img from '../../components/Img';
 import { Container } from './styles';
 import { FlexContainer, FlexItem } from '../../components/FlexContainer';
+import history from '../../services/history';
 import {
   loadDriverRequest,
   updateDriverRequest,
@@ -34,7 +35,11 @@ function updateDriver({ match }) {
     dispatch(loadDriverRequest(_id));
   }, []);
   function handleSubmit(values) {
-    dispatch(updateDriverRequest(_id, values));
+    dispatch(
+      updateDriverRequest(_id, values, () => {
+        history.push('/motoristas');
+      })
+    );
   }
   return (
     <Container>
