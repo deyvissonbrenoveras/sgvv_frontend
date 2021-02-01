@@ -6,6 +6,7 @@ import { Container } from './styles';
 import Img from '../../components/Img';
 import { addVehicleRequest } from '../../store/modules/vehicle/actions';
 import { FlexContainer, FlexItem } from '../../components/FlexContainer';
+import history from '../../services/history';
 
 function newVehicle() {
   const dispatch = useDispatch();
@@ -21,7 +22,11 @@ function newVehicle() {
     licensePlate: Yup.string().notRequired(),
   });
   async function handleSubmit(values) {
-    dispatch(addVehicleRequest(values));
+    dispatch(
+      addVehicleRequest(values, () => {
+        history.push('/veiculos');
+      })
+    );
   }
   return (
     <Container>

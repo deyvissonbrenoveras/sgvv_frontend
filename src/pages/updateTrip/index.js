@@ -57,43 +57,51 @@ function updateTrip({ match }) {
   useEffect(() => {
     dispatch(loadTripRequest(_id));
   }, []);
-  function handleSubmit(values) {
-    dispatch(updateTripRequest(_id, values));
-  }
-  useEffect(() => {
+  function calcTrip(tripToCalc) {
     const localStartTime = `${new Date(
-      tripToUpdate.startTime
+      tripToCalc.startTime
     ).toLocaleDateString()} ${new Date(
-      tripToUpdate.startTime
+      tripToCalc.startTime
     ).toLocaleTimeString()}`;
 
-    const localEndTime = tripToUpdate.endTime
-      ? `${new Date(tripToUpdate.endTime).toLocaleDateString()} ${new Date(
-          tripToUpdate.endTime
+    const localEndTime = tripToCalc.endTime
+      ? `${new Date(tripToCalc.endTime).toLocaleDateString()} ${new Date(
+          tripToCalc.endTime
         ).toLocaleTimeString()}`
       : '--/--/-- --:--';
 
     let timeDifference = '';
-    if (tripToUpdate && tripToUpdate.startTime) {
+    if (tripToCalc && tripToCalc.startTime) {
       timeDifference = formatDistance(
-        new Date(tripToUpdate.startTime),
-        tripToUpdate.endTime
-          ? new Date(tripToUpdate.endTime)
+        new Date(tripToCalc.startTime),
+        tripToCalc.endTime
+          ? new Date(tripToCalc.endTime)
           : new Date(Date.now()),
         { locale: ptBR, includeSeconds: false }
       );
     }
     let returnedAmount = 0;
-    if (trip.finished) {
-      returnedAmount = tripToUpdate.amount - tripToUpdate.amountSpent;
+    if (tripToCalc.finished) {
+      returnedAmount = tripToCalc.amount - tripToCalc.amountSpent;
     }
     setTrip({
-      ...tripToUpdate,
+      ...tripToCalc,
       timeDifference,
       localEndTime,
       localStartTime,
       returnedAmount,
     });
+  }
+
+  function handleSubmit(values) {
+    dispatch(
+      updateTripRequest(_id, values, (tripToCalc) => {
+        calcTrip(tripToCalc);
+      })
+    );
+  }
+  useEffect(() => {
+    calcTrip(tripToUpdate);
   }, [tripToUpdate]);
 
   function SetMarkers({ departureLocation, arrivalLocation }) {

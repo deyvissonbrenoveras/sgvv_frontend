@@ -6,6 +6,7 @@ import { Container } from './styles';
 import Img from '../../components/Img';
 import { addDriverRequest } from '../../store/modules/driver/actions';
 import { FlexContainer, FlexItem } from '../../components/FlexContainer';
+import history from '../../services/history';
 
 function newDriver() {
   const dispatch = useDispatch();
@@ -23,7 +24,11 @@ function newDriver() {
     }),
   });
   async function handleSubmit(values) {
-    dispatch(addDriverRequest(values));
+    dispatch(
+      addDriverRequest(values, () => {
+        history.push('./motoristas');
+      })
+    );
   }
   return (
     <Container>

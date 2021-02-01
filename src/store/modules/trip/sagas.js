@@ -34,14 +34,15 @@ export function* loadRequest({ payload }) {
     });
   }
 }
-export function* addRequest({ payload }) {
+export function* addRequest({ payload, successCB }) {
   const trip = payload;
   try {
-    yield call(api.post, 'trips', trip);
+    const response = yield call(api.post, 'trips', trip);
     yield put(requestSuccess());
     cogoToast.success(`viagem iniciada com sucesso!`, {
       position: 'top-right',
     });
+    successCB(response.data._id);
   } catch (err) {
     const message = err.response
       ? err.response.data.error
@@ -51,7 +52,7 @@ export function* addRequest({ payload }) {
     });
   }
 }
-export function* updateRequest({ payload }) {
+export function* updateRequest({ payload, successCB }) {
   const { _id, trip } = payload;
   try {
     const response = yield call(api.put, `trips/${_id}`, trip);
@@ -59,6 +60,7 @@ export function* updateRequest({ payload }) {
     cogoToast.success(`viagem encerrada com sucesso!`, {
       position: 'top-right',
     });
+    successCB(response.data);
   } catch (err) {
     const message = err.response
       ? err.response.data.error

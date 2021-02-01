@@ -37,7 +37,7 @@ export function* loadRequest({ payload }) {
     );
   }
 }
-export function* addRequest({ payload }) {
+export function* addRequest({ payload, successCB }) {
   const driver = payload;
   try {
     yield call(api.post, 'drivers', driver);
@@ -45,6 +45,7 @@ export function* addRequest({ payload }) {
     cogoToast.success(`${driver.name} adicionado com sucesso!`, {
       position: 'top-right',
     });
+    successCB();
   } catch (err) {
     const message = err.response
       ? err.response.data.error
@@ -54,7 +55,7 @@ export function* addRequest({ payload }) {
     });
   }
 }
-export function* updateRequest({ payload }) {
+export function* updateRequest({ payload, successCB }) {
   const { _id, driver } = payload;
   try {
     const response = yield call(api.put, `drivers/${_id}`, driver);
@@ -62,6 +63,7 @@ export function* updateRequest({ payload }) {
     cogoToast.success(`${driver.name} atualizado com sucesso!`, {
       position: 'top-right',
     });
+    successCB();
   } catch (err) {
     const message = err.response
       ? err.response.data.error

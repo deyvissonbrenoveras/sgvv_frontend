@@ -13,6 +13,7 @@ import { FlexContainer, FlexItem } from '../../components/FlexContainer';
 import { loadDriversRequest } from '../../store/modules/driver/actions';
 import { loadVehiclesRequest } from '../../store/modules/vehicle/actions';
 import { addTripRequest } from '../../store/modules/trip/actions';
+import history from '../../services/history';
 
 function newTrip() {
   const dispatch = useDispatch();
@@ -57,7 +58,12 @@ function newTrip() {
   const mapCenter = [-6.8909, -38.5566];
 
   function handleSubmit(values) {
-    dispatch(addTripRequest(values));
+    dispatch(
+      addTripRequest(values, (tripId) => {
+        console.tron.log(tripId);
+        history.push(`/editarviagem/${tripId}`);
+      })
+    );
   }
   function SetMarkers({ bounds }) {
     const map = useMap();

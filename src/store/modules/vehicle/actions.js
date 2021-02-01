@@ -1,7 +1,8 @@
-export function addVehicleRequest(vehicle) {
+export function addVehicleRequest(vehicle, successCB) {
   return {
     type: '@vehicle/ADD_REQUEST',
     payload: vehicle,
+    successCB,
   };
 }
 
@@ -30,10 +31,11 @@ export function loadVehiclesSuccess(vehicles) {
     payload: vehicles,
   };
 }
-export function updateVehicleRequest(_id, vehicle) {
+export function updateVehicleRequest(_id, vehicle, successCB) {
   return {
     type: '@vehicle/UPDATE_REQUEST',
     payload: { _id, vehicle },
+    successCB,
   };
 }
 export function updateVehicleSuccess(vehicle) {

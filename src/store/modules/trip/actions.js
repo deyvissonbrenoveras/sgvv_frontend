@@ -1,7 +1,8 @@
-export function addTripRequest(trip) {
+export function addTripRequest(trip, successCB) {
   return {
     type: '@trip/ADD_REQUEST',
     payload: trip,
+    successCB,
   };
 }
 
@@ -31,10 +32,11 @@ export function loadTripsSuccess(trips) {
     payload: trips,
   };
 }
-export function updateTripRequest(_id, trip) {
+export function updateTripRequest(_id, trip, successCB) {
   return {
     type: '@trip/UPDATE_REQUEST',
     payload: { _id, trip },
+    successCB,
   };
 }
 export function updateTripSuccess(trip) {

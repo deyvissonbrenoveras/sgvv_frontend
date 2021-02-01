@@ -1,7 +1,8 @@
-export function addDriverRequest(driver) {
+export function addDriverRequest(driver, successCB) {
   return {
     type: '@driver/ADD_REQUEST',
     payload: driver,
+    successCB,
   };
 }
 
@@ -30,10 +31,11 @@ export function loadDriversSuccess(drivers) {
     payload: drivers,
   };
 }
-export function updateDriverRequest(_id, driver) {
+export function updateDriverRequest(_id, driver, successCB) {
   return {
     type: '@driver/UPDATE_REQUEST',
     payload: { _id, driver },
+    successCB,
   };
 }
 export function updateDriverSuccess(Driver) {

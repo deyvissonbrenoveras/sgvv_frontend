@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Img from '../../components/Img';
 import { Container } from './styles';
 import { FlexContainer, FlexItem } from '../../components/FlexContainer';
-
+import history from '../../services/history';
 import {
   loadVehicleRequest,
   updateVehicleRequest,
@@ -31,7 +31,11 @@ function updateVehicle({ match }) {
     dispatch(loadVehicleRequest(_id));
   }, []);
   function handleSubmit(values) {
-    dispatch(updateVehicleRequest(_id, values));
+    dispatch(
+      updateVehicleRequest(_id, values, () => {
+        history.push('/veiculos');
+      })
+    );
   }
   return (
     <Container>
