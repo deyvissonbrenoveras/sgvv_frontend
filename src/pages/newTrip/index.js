@@ -60,7 +60,6 @@ function newTrip() {
   function handleSubmit(values) {
     dispatch(
       addTripRequest(values, (tripId) => {
-        console.tron.log(tripId);
         history.push(`/editarviagem/${tripId}`);
       })
     );
