@@ -3,6 +3,11 @@ import styled from 'styled-components';
 export const Container = styled.div`
   overflow-y: scroll;
   height: 100%;
+  input[type='text'] {
+    font-family: text-security-disc;
+    /* Use -webkit-text-security if the browser supports it */
+    -webkit-text-security: disc;
+  }
 `;
 
 export const AvatarContainer = styled.div`

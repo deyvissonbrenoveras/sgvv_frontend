@@ -8,6 +8,7 @@ import ptBR from 'date-fns/locale/pt-BR';
 import { BiTimeFive } from 'react-icons/bi';
 import { MdLocationOn } from 'react-icons/md';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
+import '../../../node_modules/text-security/text-security.css';
 import {
   MapContainer,
   TileLayer,
@@ -201,10 +202,9 @@ function updateTrip({ match }) {
                       <label>
                         Senha:
                         <Field
-                          type="password"
+                          type="text"
                           id="password"
                           name="password"
-                          placeholder="Insira a senha"
                           min="0"
                         />
                         <ErrorMessage name="password" />
