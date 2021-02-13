@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useField } from 'formik';
 import PropTypes from 'prop-types';
 import Nominatim from 'nominatim-geocoder';
@@ -6,8 +6,9 @@ import { Container, LocationList, ClearButton, LoadingIcon } from './styles';
 
 function SearchLocation({ name, label }) {
   const geocoder = new Nominatim({ secure: true });
-  const [, , helpers] = useField(name);
-  const { setValue } = helpers;
+  // const [, meta, helpers] = useField(name);
+  // const { value } = meta;
+  // const { setValue } = helpers;
 
   const [searchResult, setSearchResult] = useState({
     visible: true,
@@ -18,6 +19,15 @@ function SearchLocation({ name, label }) {
   const [clearVisible, setClearVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   let timer = null;
+
+  // useEffect(() => {
+  //   if (value) {
+  //     setInputState({ value: value.name, latLon: value.latLon });
+  //     setSelectedLocation(value);
+  //     setClearVisible(true);
+  //   }
+  // }, [value]);
+
   async function handleChange(e) {
     clearTimeout(timer);
     setInputState({ ...inputState, value: e.target.value });
@@ -33,10 +43,10 @@ function SearchLocation({ name, label }) {
   }
 
   function handleClick(location) {
-    setValue({
-      name: location.display_name,
-      latLon: [location.lat, location.lon],
-    });
+    // setValue({
+    //   name: location.display_name,
+    //   latLon: [location.lat, location.lon],
+    // });
     setSelectedLocation(location);
     setInputState({
       readOnly: true,
@@ -51,10 +61,10 @@ function SearchLocation({ name, label }) {
     setSearchResult({ visible: true, locations: [] });
     setSelectedLocation(null);
     setClearVisible(false);
-    setValue({
-      name: '',
-      latLon: [],
-    });
+    // setValue({
+    //   name: '',
+    //   latLon: [],
+    // });
   }
 
   return (

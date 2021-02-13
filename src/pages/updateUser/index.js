@@ -71,7 +71,7 @@ function updateDriver({ match }) {
                 </label>
 
                 <label htmlFor="password">
-                  Senha atual
+                  Nova senha
                   <Field
                     type="password"
                     id="password"

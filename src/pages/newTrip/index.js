@@ -100,7 +100,11 @@ function newTrip() {
         initialValues={{
           driver: '',
           vehicle: '',
-          departureLocation: { name: '', latLon: [] },
+          // departureLocation: {
+          //   name:
+          //     'Cajazeiras, Região Geográfica Imediata de Cajazeiras, Região Metropolitana de Cajazeiras, Região Geográfica Intermediária de Sousa-Cajazeiras, Paraíba, Região Nordeste, 58900000, Brasil',
+          //   latLon: [-6.8897849, -38.5570389],
+          // },
           arrivalLocation: { name: '', latLon: [] },
           amount: 0,
         }}
